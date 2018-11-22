@@ -1,6 +1,6 @@
 # AlbumVideoMultipleSelDemo
 
-`AlbumVideoMultipleSelDemo` 是一个模仿微信相册多选照片而改写成的视频多选控件。源自优秀源码`ZYImagePickerAndBrower。`加以个人修改而成。
+`AlbumVideoMultipleSelDemo` 是一个视频多选控件。源自优秀源码`ZYImagePickerAndBrower。`加以个人修改而成。
 
 ![image](https://github.com/LongChLiu/AlbumVideoMultipleSelDemo/blob/master/imagePicker.jpeg){:height="607" width="358"}
 
@@ -13,7 +13,7 @@
 
 ## 功能支持
 ==============
-- **相册视频序号多选**: 微信样式多选
+- **相册视频序号多选**
 
 
 ## 使用
