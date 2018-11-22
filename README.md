@@ -1,12 +1,12 @@
 # AlbumVideoMultipleSelDemo
 
-`AlbumVideoMultipleSelDemo` 是一个模仿微信相册多选照片而改写成的视频多选控件。源自`ZYImagePickerAndBrower。`，加以个人修改而成。
+`AlbumVideoMultipleSelDemo` 是一个模仿微信相册多选照片而改写成的视频多选控件。源自优秀源码`ZYImagePickerAndBrower。`加以个人修改而成。
 
-![image](https://github.com/LongChLiu/AlbumVideoMultipleSelDemo/imagePicker.jpeg)
+![image](https://github.com/LongChLiu/AlbumVideoMultipleSelDemo/blob/master/imagePicker.jpeg)
 
 ## Requirements
 
-`ZYImagePickerAndBrower`   支持iOS8+
+`AlbumVideoMultipleSelDemo`   支持iOS8+
 
 * Photo.framework
 * UIKit.framework
