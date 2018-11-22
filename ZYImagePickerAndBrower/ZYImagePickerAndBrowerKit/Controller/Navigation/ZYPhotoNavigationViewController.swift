@@ -73,10 +73,9 @@ public class ZYPhotoNavigationViewController: UINavigationController {
     ///   - photoAlbumDelegate: 代理回调方法
     ///   - photoAlbumType: 相册类型
     public init(photoAlbumDelegate: ZYPhotoAlbumProtocol?) {
-//        let photoAlbumListVC = ZYPhotoAlbumListViewController()
-//        photoAlbumListVC.photoAlbumDelegate = photoAlbumDelegate
-//        photoAlbumListVC.type = photoAlbumType
-        super.init(rootViewController: UIViewController())
+        let photoAlbumListVC = ZYPhotoAlbumListViewController()
+        photoAlbumListVC.photoAlbumDelegate = photoAlbumDelegate
+        super.init(rootViewController: photoAlbumListVC)
         self.isNavigationBarHidden = true
         photoAlbumVC.photoAlbumDelegate = photoAlbumDelegate
         self.pushViewController(photoAlbumVC, animated: false)

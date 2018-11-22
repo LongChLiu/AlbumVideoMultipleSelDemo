@@ -9,11 +9,19 @@
 import UIKit
 import Photos
 
-class ZYPhotoAlbumListViewController: ZYBaseViewController{
+class ZYPhotoAlbumListViewController: ZYBaseViewController, UITableViewDelegate, UITableViewDataSource{
     
     weak var photoAlbumDelegate: ZYPhotoAlbumProtocol?
     
     private var albumsList: [(assetCollection:PHAssetCollection, assetsFetchResult: PHFetchResult<PHAsset>)] = []
+    private lazy var albumTableView: UITableView = {
+        let tableView = UITableView(frame: CGRect(x: 0, y: ZYNavigationTotalHeight, width: ZYScreenWidth, height: ZYScreenHeight-ZYNavigationTotalHeight), style: .plain)
+        tableView.backgroundColor = UIColor.white
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.separatorStyle = .none
+        return tableView
+    }()
     
     deinit {
         if ZYPhotoAlbumEnableDebugOn {
@@ -25,6 +33,8 @@ class ZYPhotoAlbumListViewController: ZYBaseViewController{
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         self.initNavigation()
+        self.view.addSubview(albumTableView)
+        self.getAllAlbum()
     }
     
     //  MARK: - private method
@@ -37,6 +47,74 @@ class ZYPhotoAlbumListViewController: ZYBaseViewController{
     override func rightButtonClick(button: UIButton) {
         self.navigationController?.dismiss(animated: true)
     }
+    
+    private func getAllAlbum() {
+        DispatchQueue.global(qos: .userInteractive).async {
+            let fetchResult = PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: .albumRegular, options: nil)
+            fetchResult.enumerateObjects({ [weak self] (assetCollection, index, nil) in
+                guard let strongSelf = self else {return}
+                let allOptions = PHFetchOptions()
+                allOptions.sortDescriptors = [NSSortDescriptor.init(key: "creationDate", ascending: false)]
+                let assetsFetchResult = PHAsset.fetchAssets(in: assetCollection, options: allOptions)
+                guard assetsFetchResult.count <= 0 else {
+                    let assetItem = (assetCollection, assetsFetchResult)
+                    if assetCollection.assetCollectionSubtype == .smartAlbumVideos || assetCollection.assetCollectionSubtype == .smartAlbumSlomoVideos {
+                        return
+                    }
+                    if assetCollection.assetCollectionSubtype == .smartAlbumUserLibrary {
+                        strongSelf.albumsList.insert(assetItem, at: 0)
+                    } else {
+                        strongSelf.albumsList.append(assetItem)
+                    }
+                    return
+                }
+            })
+            DispatchQueue.main.async {
+                self.albumTableView.reloadData()
+            }
+        }
+    }
+    
+    
+    //  MARK: - delegate
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return albumsList.count
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 60
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let album: PHAssetCollection = albumsList[indexPath.row].assetCollection
+        
+        var albumsCell: ZYAlbumCell? = tableView.dequeueReusableCell(withIdentifier: "AlbumsCell") as? ZYAlbumCell
+        if albumsCell == nil {
+            albumsCell = ZYAlbumCell(style: .default, reuseIdentifier: "AlbumsCell")
+        }
+        albumsCell?.albumName = album.localizedTitle
+        let photoResult = PHAsset.fetchAssets(in: album, options: nil)
+        if photoResult.count != 0 {
+            let asset = photoResult.lastObject
+            _ = ZYCachingImageManager.default().requestThumbnailImage(for: asset!, resultHandler: { (image: UIImage?, dictionry: Dictionary?) in
+                albumsCell?.albumImage = image
+            })
+        }
+        return albumsCell!
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        guard albumsList.count > indexPath.row else {return}
+        tableView.deselectRow(at: indexPath, animated: true)
+        let assetsFetchResult = albumsList[indexPath.row].assetsFetchResult
+        let photoAlbumViewController = ZYPhotoAlbumViewController()
+        photoAlbumViewController.assetsFetchResult = assetsFetchResult
+        photoAlbumViewController.photoAlbumDelegate = self.photoAlbumDelegate
+        //photoAlbumViewController.type = self.type
+        self.navigationController?.pushViewController(photoAlbumViewController, animated: true)
+    }
+    
+    
     
 }
 
