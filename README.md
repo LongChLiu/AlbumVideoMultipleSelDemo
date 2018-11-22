@@ -2,7 +2,7 @@
 
 `ZYImagePickerAndBrower` 是一个模仿微信相册多选照片而改写成的视频多选控件。注意了微信相册的一些细节，比如序号，最大选择之后照片变灰，浏览缩略图等。
 
-![image](/AlbumVideoMultipleSelDemo/imagePicker.jpeg)
+![image](https://github.com/LongChLiu/AlbumVideoMultipleSelDemo/imagePicker.jpeg)
 
 ## Requirements
 
