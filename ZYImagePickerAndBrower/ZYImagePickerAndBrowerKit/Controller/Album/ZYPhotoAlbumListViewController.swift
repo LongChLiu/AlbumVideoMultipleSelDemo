@@ -48,25 +48,40 @@ class ZYPhotoAlbumListViewController: ZYBaseViewController, UITableViewDelegate,
         self.navigationController?.dismiss(animated: true)
     }
     
-    private func getAllAlbum() {
+    private func getAllAlbum() {//.smartAlbum
         DispatchQueue.global(qos: .userInteractive).async {
-            let fetchResult = PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: .albumRegular, options: nil)
+            let fetchResult = PHAssetCollection.fetchAssetCollections(with: PHAssetCollectionType.smartAlbum, subtype: .albumRegular, options: nil)
             fetchResult.enumerateObjects({ [weak self] (assetCollection, index, nil) in
                 guard let strongSelf = self else {return}
                 let allOptions = PHFetchOptions()
                 allOptions.sortDescriptors = [NSSortDescriptor.init(key: "creationDate", ascending: false)]
                 let assetsFetchResult = PHAsset.fetchAssets(in: assetCollection, options: allOptions)
                 guard assetsFetchResult.count <= 0 else {
+                    
+//                    let assetItem = (assetCollection, assetsFetchResult)
+//                    if assetCollection.assetCollectionSubtype == .smartAlbumVideos || assetCollection.assetCollectionSubtype == .smartAlbumSlomoVideos {
+//                        return
+//                    }
+//                    if assetCollection.assetCollectionSubtype == .smartAlbumUserLibrary {
+//                        strongSelf.albumsList.insert(assetItem, at: 0)
+//                    } else {
+//                        strongSelf.albumsList.append(assetItem)
+//                    }
+//                    return
+                    
                     let assetItem = (assetCollection, assetsFetchResult)
                     if assetCollection.assetCollectionSubtype == .smartAlbumVideos || assetCollection.assetCollectionSubtype == .smartAlbumSlomoVideos {
+                        if assetCollection.assetCollectionSubtype == .smartAlbumUserLibrary {
+                            strongSelf.albumsList.insert(assetItem, at: 0)
+                        } else {
+                            strongSelf.albumsList.append(assetItem)
+                        }
+                    }else{
                         return
                     }
-                    if assetCollection.assetCollectionSubtype == .smartAlbumUserLibrary {
-                        strongSelf.albumsList.insert(assetItem, at: 0)
-                    } else {
-                        strongSelf.albumsList.append(assetItem)
-                    }
+                    
                     return
+                    
                 }
             })
             DispatchQueue.main.async {
