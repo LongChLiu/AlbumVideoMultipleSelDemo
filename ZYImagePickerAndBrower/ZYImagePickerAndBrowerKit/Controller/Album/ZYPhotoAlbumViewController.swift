@@ -329,6 +329,12 @@ class ZYPhotoAlbumViewController: ZYBaseViewController, PHPhotoLibraryChangeObse
             cell.photoImage = result!
         })
         
+        
+//        imageManager.requestAVAsset(forVideo: asset, options: nil) { (<#AVAsset?#>, <#AVAudioMix?#>, <#[AnyHashable : Any]?#>) in
+//
+//        }
+        
+        
         if selectStyle == .number {
             if let Index = photoData.seletedAssetArray.index(of: asset) {
                 cell.layer.mask = nil
